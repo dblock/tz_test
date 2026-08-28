@@ -2,7 +2,7 @@
 
 Reproduction for the `humanizer` Elixir library (https://github.com/ivan-podgurskiy/humanizer),
 tested as a maintained alternative to `Timex` (which reproduced the Norfolk Island bug --
-see `../tztest/`).
+see `../timex/`).
 
 `Humanizer.relative_time/2,3` is clean on both the Norfolk Island permanent offset-change
 case and the Dublin DST fall-back case, and (unlike `Timex.Format.Duration.Formatters.Humanized.format/2`,

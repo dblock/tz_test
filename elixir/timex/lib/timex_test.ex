@@ -1,6 +1,6 @@
-defmodule Tztest do
+defmodule TimexTest do
   @moduledoc """
-  Documentation for `Tztest`.
+  Documentation for `TimexTest`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Tztest do
 
   ## Examples
 
-      iex> Tztest.hello()
+      iex> TimexTest.hello()
       :world
 
   """

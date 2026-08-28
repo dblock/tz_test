@@ -62,7 +62,7 @@ Each directory is a standalone scratch project for one language/runtime:
 - `php/` — `composer install && php test_norfolk.php && php test_dublin.php && php test_carbon.php`
 - `dotnet/` — `dotnet add package Humanizer && dotnet run`
 - `java/` — download [PrettyTime](https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime) to `java/lib/prettytime.jar`, then `javac -cp lib/prettytime.jar TzTest.java && java -cp .:lib/prettytime.jar TzTest`
-- `elixir/tztest/` — `mix deps.get && mix run test.exs`
+- `elixir/timex/` — `mix deps.get && mix run test.exs`
 - `elixir/humanizer_test/` — `mix deps.get && mix run test.exs`
 
 Related blog post: [Adventures in Daylight Saving, Norfolk Island, and Time Zone Math (in Ruby)](https://code.dblock.org/2026/08/28/adventures-in-daylight-saving-norfolk-island-and-time-zone-math-in-ruby.html)
