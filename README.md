@@ -31,6 +31,9 @@ also occur in similar "humanize a time difference" libraries across other langua
 | Java | `PrettyTime` | No | No |
 | **Elixir** | **`Timex`** | **Yes — "1 year, 2 months, 30 minutes"** | No |
 | Elixir | `humanizer` | No | No |
+| Swift | `DateComponentsFormatter` | No | No |
+| Objective-C | `NSDateComponentsFormatter` | No | No |
+| Dart | `timeago` | No | No |
 
 Only `Timex` reproduced a bug, and it's the same shape as `dotiw`'s original Norfolk
 failure: the real 30-minute offset delta leaks out as a spurious trailing unit in the
@@ -73,8 +76,12 @@ other categories of edge cases worth checking across languages: reversed argumen
 | Elixir | `Timex` (`format/1`) | OK | OK |
 | **Elixir** | **`Timex` (`format/2`, PR #793)** | **Crashed — fixed in [PR #794](https://github.com/bitwalker/timex/pull/794)** | OK |
 | Elixir | `humanizer` | OK | OK |
+| **Swift** | **`DateComponentsFormatter`** | **Bug — see below** | OK |
+| Swift / Objective-C | `RelativeDateTimeFormatter` | OK | OK |
+| **Objective-C** | **`NSDateComponentsFormatter`** | **Bug — see below** | OK |
+| Dart | `timeago` | OK | OK |
 
-The one new bug found was in the `format/2` API added by our own PR #793 to Timex: it
+The one new bug found in Timex was in the `format/2` API added by our own PR #793: it
 assumed `start <= finish` and passed a negative year/month count straight into Gettext's
 plural translation, which requires a non-negative count, raising a `FunctionClauseError`.
 `format/1` (and every other library tested) has always been sign-independent for this
@@ -82,6 +89,23 @@ kind of input, so this was a regression specific to the new API, not an issue in
 Timex or in any other library. It's fixed in
 [bitwalker/timex#794](https://github.com/bitwalker/timex/pull/794) by normalizing the
 order of `start`/`finish` before doing the calendar-aware diff/shift arithmetic.
+
+**A second, unrelated bug was found in Apple's `NSDateComponentsFormatter` / Swift's
+`DateComponentsFormatter`** (the same underlying implementation, exposed through both
+languages). Given a reversed `(fromDate, toDate)` pair, `NSCalendar` itself correctly
+computes all-negative components (e.g. `year=-1, month=-2`), but the formatter only
+negates the *first* nonzero unit and leaves the rest positive:
+
+```objc
+// forward:  "1 year, 2 months"
+// reversed: "-1 year, 2 months"   <- should read "-1 year, -2 months", or "1 year, 2 months ago"
+```
+
+This is a sign-consistency bug rather than a timezone-offset bug, but it's the same root
+cause as the others: a compound multi-unit breakdown that doesn't uniformly propagate a
+property (there, offset correction; here, sign) across every unit in the breakdown. See
+`objc/README.md` for the full reproduction, including 3-unit spans and multiple
+`unitsStyle` values, all showing the same pattern.
 
 ## Running the tests
 
@@ -96,5 +120,8 @@ Each directory is a standalone scratch project for one language/runtime:
 - `java/` — download [PrettyTime](https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime) to `java/lib/prettytime.jar`, then `javac -cp lib/prettytime.jar TzTest.java && java -cp .:lib/prettytime.jar TzTest`
 - `elixir/timex/` — `mix deps.get && mix run test.exs`
 - `elixir/humanizer_test/` — `mix deps.get && mix run test.exs`
+- `swift/` — `swift main.swift` (macOS only)
+- `objc/` — `clang -framework Foundation -fobjc-arc main.m -o main && ./main` (macOS only)
+- `dart/` — `dart pub get && dart run main.dart`
 
 Related blog post: [Adventures in Daylight Saving, Norfolk Island, and Time Zone Math (in Ruby)](https://code.dblock.org/2026/08/28/adventures-in-daylight-saving-norfolk-island-and-time-zone-math-in-ruby.html)

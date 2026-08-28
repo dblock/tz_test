@@ -8,3 +8,7 @@ bin/
 vendor/
 **/lib/*.jar
 *.class
+.dart_tool/
+.pub-cache/
+swift/main
+objc/main

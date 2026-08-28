@@ -1,0 +1,8 @@
+name: dart_test
+description: Timezone bug reproduction for Dart humanize libraries.
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+dependencies:
+  timeago: ^3.7.0
+  timezone: ^0.9.0
