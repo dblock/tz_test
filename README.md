@@ -76,9 +76,9 @@ other categories of edge cases worth checking across languages: reversed argumen
 | Elixir | `Timex` (`format/1`) | OK | OK |
 | **Elixir** | **`Timex` (`format/2`, PR #793)** | **Crashed — fixed in [PR #794](https://github.com/bitwalker/timex/pull/794)** | OK |
 | Elixir | `humanizer` | OK | OK |
-| **Swift** | **`DateComponentsFormatter`** | **Bug — see below** | OK |
+| Swift | `DateComponentsFormatter` | OK | OK |
 | Swift / Objective-C | `RelativeDateTimeFormatter` | OK | OK |
-| **Objective-C** | **`NSDateComponentsFormatter`** | **Bug — see below** | OK |
+| Objective-C | `NSDateComponentsFormatter` | OK | OK |
 | Dart | `timeago` | OK | OK |
 
 The one new bug found in Timex was in the `format/2` API added by our own PR #793: it
@@ -90,22 +90,17 @@ Timex or in any other library. It's fixed in
 [bitwalker/timex#794](https://github.com/bitwalker/timex/pull/794) by normalizing the
 order of `start`/`finish` before doing the calendar-aware diff/shift arithmetic.
 
-**A second, unrelated bug was found in Apple's `NSDateComponentsFormatter` / Swift's
-`DateComponentsFormatter`** (the same underlying implementation, exposed through both
-languages). Given a reversed `(fromDate, toDate)` pair, `NSCalendar` itself correctly
-computes all-negative components (e.g. `year=-1, month=-2`), but the formatter only
-negates the *first* nonzero unit and leaves the rest positive:
-
-```objc
-// forward:  "1 year, 2 months"
-// reversed: "-1 year, 2 months"   <- should read "-1 year, -2 months", or "1 year, 2 months ago"
-```
-
-This is a sign-consistency bug rather than a timezone-offset bug, but it's the same root
-cause as the others: a compound multi-unit breakdown that doesn't uniformly propagate a
-property (there, offset correction; here, sign) across every unit in the breakdown. See
-`objc/README.md` for the full reproduction, including 3-unit spans and multiple
-`unitsStyle` values, all showing the same pattern.
+**A candidate bug considered, then ruled out**: `NSDateComponentsFormatter` (also Swift's
+`DateComponentsFormatter`, same underlying implementation) renders a reversed
+`(fromDate, toDate)` pair as `"-1 year, 2 months"` rather than `"-1 year, -2 months"`.
+This looked like a sign-dropping bug at first, but it's actually standard mixed-radix
+negative notation — the same convention used for negative durations like `-1:30:00` (one
+and a half hours negative, not "minus one hour plus thirty minutes") or negative
+degrees/minutes/seconds in geographic coordinates: only the leading unit carries the
+sign, and the rest are magnitudes of the same negative quantity. `NSCalendar` confirms
+this reading is intentional — it returns fully-negative components (`year=-1, month=-2`)
+under the hood, and the formatter correctly collapses that into a single leading sign for
+display. Not a bug; see `objc/README.md` for the reproduction and reasoning.
 
 ## Running the tests
 

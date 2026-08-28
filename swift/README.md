@@ -4,18 +4,10 @@ Reproduction using Apple's built-in `Foundation` formatters: `DateComponentsForm
 (compound calendar-unit breakdown, analogous to `dotiw`) and `RelativeDateTimeFormatter`
 (single-largest-unit "time ago" style).
 
-Both are clean on the Norfolk Island permanent offset-change case and the Dublin DST
-fall-back case. `RelativeDateTimeFormatter` is also clean on reversed argument order and
-zero distance.
-
-**`DateComponentsFormatter` has a real bug on reversed argument order**, shared with
-Objective-C's `NSDateComponentsFormatter` (same underlying implementation) -- see
-`../objc/README.md` for the full writeup:
-
-```swift
-// forward:  "1 year, 2 months"
-// reversed: "-1 year, 2 months"   <- should read "-1 year, -2 months", or "1 year, 2 months ago"
-```
+Both are clean on the Norfolk Island permanent offset-change case, the Dublin DST
+fall-back case, reversed argument order, and zero distance. See `../objc/README.md` for
+a note on why `DateComponentsFormatter`'s reversed-order output (`"-1 year, 2 months"`)
+is correct mixed-radix negative notation, not a sign-dropping bug.
 
 Run with:
 
