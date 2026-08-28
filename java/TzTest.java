@@ -32,5 +32,12 @@ public class TzTest {
 
         PrettyTime dp = new PrettyTime(Date.from(dstart.toInstant()));
         System.out.println("Dublin PrettyTime.format: " + dp.format(Date.from(dfinish.toInstant())));
+    
+        // reversed order (finish before start) and zero distance
+        System.out.println();
+        System.out.println("Reversed PrettyTime (ref=finish, format start): " +
+            new PrettyTime(Date.from(finish.toInstant())).format(Date.from(start.toInstant())));
+        System.out.println("Zero distance PrettyTime: " +
+            new PrettyTime(Date.from(start.toInstant())).format(Date.from(start.toInstant())));
     }
 }

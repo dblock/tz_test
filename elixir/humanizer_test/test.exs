@@ -14,3 +14,6 @@ IO.puts("Dublin relative_time: #{Humanizer.relative_time(dstart, dfinish)}")
 # Reversed order (finish before start) -- this crashed Timex's format/2
 # (github.com/bitwalker/timex/pull/794); relative_time handles it natively.
 IO.puts("Reversed order relative_time: #{Humanizer.relative_time(finish, start)}")
+
+# Zero distance (same instant)
+IO.puts("Zero distance relative_time: #{Humanizer.relative_time(start, start)}")

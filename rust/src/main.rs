@@ -21,4 +21,12 @@ fn main() {
     let ddiff = dfinish.signed_duration_since(dstart);
     println!("Dublin raw diff: {} seconds", ddiff.num_seconds());
     println!("Dublin HumanTime: {}", HumanTime::from(ddiff));
+
+    // reversed order (finish before start)
+    let rev_diff = start.signed_duration_since(finish);
+    println!("Reversed HumanTime (finish before start): {}", HumanTime::from(rev_diff));
+
+    // zero distance
+    let zero_diff = start.signed_duration_since(start);
+    println!("Zero distance HumanTime: {}", HumanTime::from(zero_diff));
 }

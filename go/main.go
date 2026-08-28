@@ -26,4 +26,6 @@ func main() {
 	_, dfo := dfinish.Zone()
 	fmt.Println("Dublin start offset:", dso, "finish offset:", dfo)
 	fmt.Println("Dublin RelTime:", humanize.RelTime(dstart, dfinish, "", ""))
+
+	edgeCases()
 }

@@ -25,3 +25,8 @@ Console.WriteLine($"Dublin start offset: {dstart.Offset}");
 Console.WriteLine($"Dublin finish offset: {dfinish.Offset}");
 Console.WriteLine($"Dublin raw diff: {dfinish - dstart}");
 Console.WriteLine($"Dublin Humanize: {(dfinish - dstart).Humanize(precision: 5)}");
+
+// reversed order (finish before start) and zero distance
+Console.WriteLine();
+Console.WriteLine($"Reversed Humanize (start - finish): {(start - finish).Humanize(precision: 5)}");
+Console.WriteLine($"Zero distance Humanize: {(start - start).Humanize(precision: 5)}");

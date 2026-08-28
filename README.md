@@ -51,15 +51,47 @@ unit ("about 1 year", "a minute ago") with no calendar-shaped bucket for a stray
 to leak into, or (in `Carbon`'s case) by getting the offset math right underneath, at the
 `DateInterval` level, before any splitting into units occurs.
 
+## Other edge cases tested
+
+Beyond the two timezone-specific bugs, we also went through `dotiw`'s own test suite for
+other categories of edge cases worth checking across languages: reversed argument order
+(`finish` chronologically before `start`) and zero distance (same instant twice).
+
+| Language | Library | Reversed order | Zero distance |
+|---|---|---|---|
+| JavaScript | `date-fns` | OK | OK |
+| JavaScript | `dayjs` | OK | OK |
+| JavaScript | `moment.js` | OK | OK |
+| Python | `humanize` | OK | OK |
+| Python | `arrow` | OK | OK |
+| Go | `go-humanize` | OK | OK |
+| Rust | `chrono-humanize` | OK | OK |
+| PHP | native `DateTime::diff` | OK (`invert` flag) | OK |
+| PHP | `Carbon` | OK | OK |
+| C# | `Humanizer` | OK | OK |
+| Java | `PrettyTime` | OK | OK |
+| Elixir | `Timex` (`format/1`) | OK | OK |
+| **Elixir** | **`Timex` (`format/2`, PR #793)** | **Crashed — fixed in [PR #794](https://github.com/bitwalker/timex/pull/794)** | OK |
+| Elixir | `humanizer` | OK | OK |
+
+The one new bug found was in the `format/2` API added by our own PR #793 to Timex: it
+assumed `start <= finish` and passed a negative year/month count straight into Gettext's
+plural translation, which requires a non-negative count, raising a `FunctionClauseError`.
+`format/1` (and every other library tested) has always been sign-independent for this
+kind of input, so this was a regression specific to the new API, not an issue in released
+Timex or in any other library. It's fixed in
+[bitwalker/timex#794](https://github.com/bitwalker/timex/pull/794) by normalizing the
+order of `start`/`finish` before doing the calendar-aware diff/shift arithmetic.
+
 ## Running the tests
 
 Each directory is a standalone scratch project for one language/runtime:
 
-- `js/` — `npm install && node test_date_fns.mjs && node test_dayjs.mjs && node test_moment.mjs && node test_dublin.mjs && node test_dublin2.mjs`
-- `test_python.py` / `test_python_dublin.py` — `pip install humanize arrow && python3 test_python.py`
-- `go/` — `go run main.go`
+- `js/` — `npm install && node test_date_fns.mjs && node test_dayjs.mjs && node test_moment.mjs && node test_dublin.mjs && node test_dublin2.mjs && node test_edge_cases.mjs`
+- `test_python.py` / `test_python_dublin.py` / `test_python_edge_cases.py` — `pip install humanize arrow && python3 test_python.py`
+- `go/` — `go run .`
 - `rust/` — `cargo run`
-- `php/` — `composer install && php test_norfolk.php && php test_dublin.php && php test_carbon.php`
+- `php/` — `composer install && php test_norfolk.php && php test_dublin.php && php test_carbon.php && php test_edge_cases.php`
 - `dotnet/` — `dotnet add package Humanizer && dotnet run`
 - `java/` — download [PrettyTime](https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime) to `java/lib/prettytime.jar`, then `javac -cp lib/prettytime.jar TzTest.java && java -cp .:lib/prettytime.jar TzTest`
 - `elixir/timex/` — `mix deps.get && mix run test.exs`
