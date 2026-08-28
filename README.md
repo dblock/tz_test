@@ -33,7 +33,8 @@ also occur in similar "humanize a time difference" libraries across other langua
 
 Only `Timex` reproduced a bug, and it's the same shape as `dotiw`'s original Norfolk
 failure: the real 30-minute offset delta leaks out as a spurious trailing unit in the
-compound breakdown, instead of being absorbed cleanly into "1 year, 2 months".
+compound breakdown, instead of being absorbed cleanly into "1 year, 2 months". A fix
+is proposed in [`bitwalker/timex` PR #793](https://github.com/bitwalker/timex/pull/793).
 
 Most other libraries avoid the trap structurally, either by rounding to a single largest
 unit ("about 1 year", "a minute ago") with no calendar-shaped bucket for a stray remainder
