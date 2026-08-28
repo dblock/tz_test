@@ -18,6 +18,7 @@ also occur in similar "humanize a time difference" libraries across other langua
 
 | Language | Library | Norfolk bug? | Dublin bug? |
 |---|---|---|---|
+| Ruby | `dotiw` (latest, 5.6.0) | No (fixed upstream) | No (fixed upstream) |
 | JavaScript | `date-fns` | No | No |
 | JavaScript | `dayjs` | No | No |
 | JavaScript | `moment.js` | No | No |
@@ -62,6 +63,7 @@ other categories of edge cases worth checking across languages: reversed argumen
 
 | Language | Library | Reversed order | Zero distance |
 |---|---|---|---|
+| Ruby | `dotiw` (latest, 5.6.0) | OK | OK |
 | JavaScript | `date-fns` | OK | OK |
 | JavaScript | `dayjs` | OK | OK |
 | JavaScript | `moment.js` | OK | OK |
@@ -106,6 +108,7 @@ display. Not a bug; see `objc/README.md` for the reproduction and reasoning.
 
 Each directory is a standalone scratch project for one language/runtime:
 
+- `ruby/` — `bundle install && bundle exec ruby test.rb`
 - `js/` — `npm install && node test_date_fns.mjs && node test_dayjs.mjs && node test_moment.mjs && node test_dublin.mjs && node test_dublin2.mjs && node test_edge_cases.mjs`
 - `python/` — `pip install humanize arrow && python3 python/test_python.py`
 - `go/` — `go run .`
