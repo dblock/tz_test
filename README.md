@@ -88,7 +88,7 @@ order of `start`/`finish` before doing the calendar-aware diff/shift arithmetic.
 Each directory is a standalone scratch project for one language/runtime:
 
 - `js/` — `npm install && node test_date_fns.mjs && node test_dayjs.mjs && node test_moment.mjs && node test_dublin.mjs && node test_dublin2.mjs && node test_edge_cases.mjs`
-- `test_python.py` / `test_python_dublin.py` / `test_python_edge_cases.py` — `pip install humanize arrow && python3 test_python.py`
+- `python/` — `pip install humanize arrow && python3 python/test_python.py`
 - `go/` — `go run .`
 - `rust/` — `cargo run`
 - `php/` — `composer install && php test_norfolk.php && php test_dublin.php && php test_carbon.php && php test_edge_cases.php`
