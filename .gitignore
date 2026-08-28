@@ -1,0 +1,10 @@
+node_modules/
+target/
+_build/
+deps/
+*.beam
+obj/
+bin/
+vendor/
+**/lib/*.jar
+*.class
