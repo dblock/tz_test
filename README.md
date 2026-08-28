@@ -30,11 +30,21 @@ also occur in similar "humanize a time difference" libraries across other langua
 | C# | `Humanizer` | No | No |
 | Java | `PrettyTime` | No | No |
 | **Elixir** | **`Timex`** | **Yes — "1 year, 2 months, 30 minutes"** | No |
+| Elixir | `humanizer` | No | No |
 
 Only `Timex` reproduced a bug, and it's the same shape as `dotiw`'s original Norfolk
 failure: the real 30-minute offset delta leaks out as a spurious trailing unit in the
 compound breakdown, instead of being absorbed cleanly into "1 year, 2 months". A fix
 is proposed in [`bitwalker/timex` PR #793](https://github.com/bitwalker/timex/pull/793).
+
+`Timex` is largely unmaintained at this point (last push mid-2025, 70+ open issues), so
+we also tried [`humanizer`](https://github.com/ivan-podgurskiy/humanizer), an actively
+maintained, English-only alternative. Its `relative_time/2,3` is clean on both cases, and
+it also correctly handles reversed argument order (`finish` before `start`) without
+crashing — unlike `Timex`'s `format/2`, which raised in that case
+([bitwalker/timex#794](https://github.com/bitwalker/timex/pull/794)). `humanizer` avoids
+the whole bug class structurally: it diffs absolute instants and branches on sign, rather
+than doing calendar-aware year/month shifting.
 
 Most other libraries avoid the trap structurally, either by rounding to a single largest
 unit ("about 1 year", "a minute ago") with no calendar-shaped bucket for a stray remainder
@@ -53,5 +63,6 @@ Each directory is a standalone scratch project for one language/runtime:
 - `dotnet/` — `dotnet add package Humanizer && dotnet run`
 - `java/` — download [PrettyTime](https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime) to `java/lib/prettytime.jar`, then `javac -cp lib/prettytime.jar TzTest.java && java -cp .:lib/prettytime.jar TzTest`
 - `elixir/tztest/` — `mix deps.get && mix run test.exs`
+- `elixir/humanizer_test/` — `mix deps.get && mix run test.exs`
 
 Related blog post: [Adventures in Daylight Saving, Norfolk Island, and Time Zone Math (in Ruby)](https://code.dblock.org/2026/08/28/adventures-in-daylight-saving-norfolk-island-and-time-zone-math-in-ruby.html)

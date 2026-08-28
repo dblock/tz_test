@@ -1,0 +1,3 @@
+%{
+  "humanizer": {:hex, :humanizer, "0.3.0", "0eda72344f586a740d95cf05725391cded27553780d6ca400baaa29f824baee9", [:mix], [], "hexpm", "8ddceec2cdcf29bb1369018d994f50bf68e82e0ffb43cd855cf8d06b4d804b19"},
+}
